@@ -81,12 +81,11 @@ def start_TCPlistener():
 def start_UDPlistener():
     sock = socket.socket(socket.AF_INET ,socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET ,socket.SO_REUSEADDR ,1)
-    sock.setsockopt(socket.SOL_SOCKET ,socket.SO_REUSEPORT ,1)
-
+    # sock.setsockopt(socket.SOL_SOCKET ,socket.SO_REUSEPORT ,1)
 
     try:
         sock.bind(("0.0.0.0" ,INTRA_PORT))
-        sock.listen(5)
+        # sock.listen(5)
 
         hostname = socket.gethostname()
         container_ip = socket.gethostbyname(hostname)
@@ -98,9 +97,10 @@ def start_UDPlistener():
 
         while True:
             try:
-                client_socket, addr = sock.accept()
+                # client_socket, addr = sock.accept()
                 
-                data = client_socket.recv(1024).decode()
+                # data = client_socket.recv(1024).decode()
+                data, addr = sock.recvfrom(1024)
                 
                 if addr[0] == CLUSTER_A_MASTER and container_ip in CLUSTER_A_CONTAINERS:
                     print(f'Received UDP message from ClusterA_master: {data}', flush=True)
@@ -115,8 +115,9 @@ def start_UDPlistener():
 
                 reply_message = f'Hello {master_container} from: {container_name}'
 
-                client_socket.sendall(reply_message.encode())
-                client_socket.close()
+                # client_socket.sendall(reply_message.encode())
+                # client_socket.close()
+                sock.sendto(reply_message.encode(), addr)
                 
                 
             except Exception as e:
@@ -127,5 +128,5 @@ def start_UDPlistener():
     
 
 if __name__ == "__main__":
-    threading.Thread(target=start_TCPlistener()).start()
-    threading.Thread(target=start_UDPlistener()).start()
+    threading.Thread(target=start_TCPlistener).start()
+    threading.Thread(target=start_UDPlistener).start()
