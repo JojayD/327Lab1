@@ -50,8 +50,9 @@ def classify_packet(packet):
         elif (src_octet in CLUSTERA_RANGE and dst_octet in CLUSTERB_RANGE):
             comm_type = "Inter-Communication"
             src_cluster, dst_cluster = "Cluster A", "Cluster B"
+        timestamp = float(packet.time)
         
-        log_entry = [comm_type, int(packet.time), src_cluster, dst_cluster, sourceIP, destinationIP, protocol, length, flags]
+        log_entry = [comm_type, f"{timestamp:.6f}", src_cluster, dst_cluster, sourceIP, destinationIP, protocol, length, flags]
 
         with WRITE_LOCK:
             with open(FILE, "a", newline="") as file:
