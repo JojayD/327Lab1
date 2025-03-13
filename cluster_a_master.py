@@ -46,7 +46,7 @@ def inter_TCPlisten():
             continue
 
         data = other_socket.recv(1024).decode()
-        print(f"Received TCP message on port {INTER_PORT} from {other_ip}: {data}")
+        print(f"Received message on port {INTER_PORT} from {other_ip}: {data}")
 
         other_socket.close()
 
@@ -61,7 +61,7 @@ def inter_UDPlisten():
                 data, addr = sock2.recvfrom(1024)
 
                 print('')
-                print(f'Received UDP message from {addr[0]}: {data.decode()}')
+                print(f'Received message from {addr[0]}: {data.decode()}')
 
                 print('Sending message to Group JS')
                 send_intra_multicastmessage(data.decode())
@@ -145,14 +145,13 @@ def send_intra_multicastmessage(message):
                 msock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 msock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-                msock.connect((container_ip, MULTICAST_PORT))
-            except Exception as e:
-                print(f"Error sending multicast message: {e}")
-            finally:
-
+                msock.connect((container_ip, INTRA_PORT))
                 msock.sendall(message.encode())
                 data = msock.recv(1024).decode()
                 print(f"Received multicast reply from {container_ip}: {data}")
+            except Exception as e:
+                print(f"Error sending multicast message: {e}")
+            finally:
                 msock.close()
                 break
 

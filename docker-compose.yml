@@ -11,7 +11,7 @@ services:
     cap_add:
       - NET_ADMIN
     working_dir: /app
-    command: sh -c "pip install scapy > /dev/null 2>&1 && python3 monitor_network.py && python3 cluster_a_master.py"
+    command: sh -c "pip install scapy > /dev/null 2>&1 && python3 monitor_network.py & python3 cluster_a_master.py"
   clusterB_master:
     container_name: clusterB_master
     image: my-python-app
@@ -23,7 +23,7 @@ services:
     cap_add:
       - NET_ADMIN
     working_dir: /app
-    command: sh -c "pip install scapy > /dev/null 2>&1 && python3 monitor_network.py && python3 -u cluster_b_master.py"
+    command: sh -c "pip install scapy > /dev/null 2>&1 && python3 monitor_network.py & python3 cluster_b_master.py"
 
   clusterA_node1:
     container_name: clusterA_node1

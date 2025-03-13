@@ -38,7 +38,7 @@ def inter_listen():
         data = other_socket.recv(1024).decode()
         if not data:
             print(f"Received empty message from {other_ip}")
-        print(f"Received TCP message on port {INTER_PORT} from {CLUSTER_B_MASTER}: {data}")  
+        print(f"Received TCP message on port {INTER_PORT} from {addr[0]}: {data}")  
         print('') 
         other_socket.close()
         send_broadcastmessage(data)
@@ -68,7 +68,7 @@ def intra_listen():
         other_socket.close()
 
 def send_broadcastmessage(message):
-    # TCP communication
+    # UDP communication
     for container_ip in WORKER_IPS:
         while True:
             try:
@@ -76,11 +76,14 @@ def send_broadcastmessage(message):
                 bsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
                 bsock.connect((container_ip, INTRA_PORT))
+                bsock.sendto(message.encode(), (container_ip, INTRA_PORT))
+
+                data = bsock.recv(1024).decode()
+                print(f'Received message back: {data}')
             except Exception as e:
                 print(f"Error sending message: {e}")
             finally:
 
-                bsock.sendall(message.encode())
                 bsock.close()
                 break
 
@@ -98,6 +101,7 @@ def inter_multicast_message(message):
             print(f"Error sending message to clusterA: {e}")
         finally:
             sock2.close()
+            break
 
 
 
@@ -112,6 +116,11 @@ def main():
     print('')
     print('Sending Inter Multicast message')
     inter_multicast_message('Hello Group JS: This is ClusterB Master')
+
+    # time.sleep(10)
+
+    # print('Sending Broadcast message from Cluster B Master to Worker Nodes')
+    # send_broadcastmessage('This is a message from Cluster B Master')
 
     
 

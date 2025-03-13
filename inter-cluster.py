@@ -71,13 +71,12 @@ def start_TCPlistener():
                 client_socket.close()
                 
                 
-            except KeyboardInterrupt:
-                print("\nShutting down...")
+            except Exception as e:
+                print(f"Error: {e}")
                 break
     except Exception as e:
         print(f"Error: {e}")
-    finally:
-        sock.close()
+    
 
 def start_UDPlistener():
     sock = socket.socket(socket.AF_INET ,socket.SOCK_DGRAM)
@@ -120,13 +119,12 @@ def start_UDPlistener():
                 client_socket.close()
                 
                 
-            except KeyboardInterrupt:
-                print("\nShutting down...")
+            except Exception as e:
+                print(f"Error: {e}")
                 break
     except Exception as e:
         print(f"Error: {e}")
-    finally:
-        sock.close()
+    
 
 if __name__ == "__main__":
     threading.Thread(target=start_TCPlistener()).start()
